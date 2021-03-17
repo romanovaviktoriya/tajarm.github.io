@@ -1,3 +1,49 @@
+//** YouTube Player */
+let player;
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+        height: '360',
+        width: '640',
+        videoId: 'KvUgaHTNit4',
+        host: 'https://www.youtube.com',
+        playerVars: {
+            'autoplay': 0,
+            //'controls': 0,
+            'showinfo': 0,
+            'rel': 0
+        },
+        events: {
+            //'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+function onPlayerReady(event) {
+    event.target.playVideo();
+}
+
+// The API calls this function when the player's state changes.
+// The function indicates that when playing a video (state=1),
+// -1 unstarted
+// 0 ended
+// 1 playing
+// 2 paused
+// 3 buffering
+// 5 video cued
+var done = false;
+function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.PLAYING && !done) {
+        done = true;
+    }
+    if (event.data == YT.PlayerState.ENDED) {
+    }
+}
+
+function stopVideo() {
+    player.stopVideo();
+}
+
 document.addEventListener('DOMContentLoaded', function(){ // Аналог $(document).ready(function(){
     const toggler = document.querySelector(`.c-navbar__toggler`);
     const collapse = document.querySelector(`.c-navbar__collapse`);
@@ -29,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function(){ // Аналог $(docu
         let mod = element.getAttribute(`data-target`);
         document.querySelector(mod).classList.add(`show`);
         document.body.classList.add(`modal--opened`);
+        player.playVideo();
     };
 
     modals.forEach(function(item) {
@@ -42,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function(){ // Аналог $(docu
         let modal = event.target.closest(`.c-modal`);
         modal.classList.remove(`show`);
         document.body.classList.remove(`modal--opened`);
+        player.pauseVideo();
     }
 
     if(closeButtons.length) {
